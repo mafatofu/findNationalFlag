@@ -58,4 +58,15 @@ public class MemberService {
         member.changeMemberInfo(passwordEncoder.encode(password));
     }
     //회원 탈퇴
+    //휴면사용자로 권한 변경
+    @Transactional
+    public void deleteMember(String userName){
+        Member member = memberRepo.findByUserName(userName)
+                .orElseThrow(
+                        ()-> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."
+                        )
+                );
+        member.deleteMemberInfo();
+    }
 }

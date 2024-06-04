@@ -5,6 +5,10 @@ import com.example.selfduizoo.dto.MemberDto;
 import com.example.selfduizoo.entity.CustomMemberDetails;
 import com.example.selfduizoo.service.CustomMemberDetailsManager;
 import com.example.selfduizoo.service.MemberService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -102,16 +106,36 @@ public class MemberController {
     @ResponseBody
     public ResponseEntity<MemberDto> updateProfile(
             @RequestBody
-            MemberDto dto,
-            RedirectAttributes redirectAttributes
+            MemberDto dto
     ){
         memberService.updateMember(dto.getUserName(), dto.getPassword());
-        msg = "수정되었습니다.^^";
-        redirectAttributes.addFlashAttribute("msg", msg);
         return ResponseEntity.ok().body(dto);
     }
 
     //회원탈퇴
+    @PostMapping("/deleteProfile")
+    @ResponseBody
+    public int deleteProfile(
+            @RequestParam("userName")
+            String userName,
+            HttpServletResponse response,
+            HttpServletRequest request
+    ){
+        //세션 삭제
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return 0;
+        }
+        session.invalidate();
 
+        // + 쿠키 삭제
+        // 같은 쿠키가 이미 존재하면 덮어쓰기 된다.
+        Cookie cookie = new Cookie("JSESSIONID", "");
+        cookie.setMaxAge(0); // 0초 생존 -> 삭제
+        cookie.setPath("/"); // 쿠키의 경로 설정
+        response.addCookie(cookie); // 요청 객체를 통해서 클라이언트에게 전달
 
+        memberService.deleteMember(userName);
+        return 1;
+    }
 }

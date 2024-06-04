@@ -20,8 +20,14 @@ public class Member {
     private String email;
     private Authority authority;
 
+
     //회원정보 수정
     public void changeMemberInfo(String password){
         this.password = password;
+    }
+
+    //회원 탈퇴
+    public void deleteMemberInfo(){
+        this.authority = Authority.ROLE_DORMANT_USER;
     }
 }

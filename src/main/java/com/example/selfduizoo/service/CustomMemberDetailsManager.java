@@ -4,6 +4,7 @@ import com.example.selfduizoo.entity.Authority;
 import com.example.selfduizoo.entity.CustomMemberDetails;
 import com.example.selfduizoo.entity.Member;
 import com.example.selfduizoo.repo.MemberRepo;
+import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,9 @@ public class CustomMemberDetailsManager implements UserDetailsManager {
         Optional<Member> optionalMember = memberRepo.findByUserName(username);
         if (optionalMember.isEmpty()){
             log.info("유저명을 찾을 수 없습니다.");
+            throw new UsernameNotFoundException(username);
+        } else if (optionalMember.get().getAuthority().getAuthority().equals("휴면사용자")){
+            log.info("비활성 사용자입니다.");
             throw new UsernameNotFoundException(username);
         }
         log.info("유저명 확인 : {}", optionalMember.get().getUserName());

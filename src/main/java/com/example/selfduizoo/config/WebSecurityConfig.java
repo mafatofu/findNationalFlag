@@ -54,7 +54,9 @@ public class WebSecurityConfig {
                                         //마이페이지
                                         "/findNationalFlag/profile",
                                         //회원정보 수정
-                                        "/findNationalFlag/updateProfile"
+                                        "/findNationalFlag/updateProfile",
+                                        //회원 탈퇴
+                                        "/findNationalFlag/deleteProfile"
                                 ).authenticated()
                 )
                 .formLogin(
