@@ -9,3 +9,14 @@ spring:
       ddl-auto: update
     show-sql: true
     database-platform: org.hibernate.community.dialect.SQLiteDialect
+  servlet:
+    multipart:
+      max-request-size: 300MB
+      max-file-size: 300MB
+    # 메일 관련
+  # 메일 관련
+  mail:
+    username: ghzm0310 # gmail 유저 이름 (자신의 메일 주소의 @ 앞 부분)
+    password: ndktkrkal22! # 아까 받은 앱 비밀번호
+
+

@@ -21,7 +21,7 @@
     <!-- 마이프로필 및 로그아웃 버튼 (인증된 사용자만 보임) -->
     <div sec:authorize="isAuthenticated()" class="centered-container-new">
         <p>
-        <h6>반갑습니다, <strong><span th:text="${userId}"></span></strong>님!</h6>
+        <h6>반갑습니다, <strong><span th:text="${member.getUserName()}"></span></strong>님!</h6>
         </p>
         <p>
         <form action="/findNationalFlag/logout" method="post" style="display: inline;">
@@ -40,10 +40,17 @@
 <script th:inline="javascript">
     window.onload = function () {
         const alertMsg = [[${msg}]];
+        const authType = [[${member.getAuthority().getAuthority()}]];
         if (alertMsg) {
             alert(alertMsg);
         }
+        if (authType === '비활성사용자'){
+            alert("마이페이지에서 메일 인증을 진행해주세요!");
+            window.location.href = "/findNationalFlag/profile";
+        }
     }
+
+
 </script>
 </body>
 </html>

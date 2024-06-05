@@ -40,6 +40,9 @@ public class WebSecurityConfig {
                                 "/findNationalFlag/duplicateCkForUserName",
                                 "/findNationalFlag/duplicateCkForEmail",
 
+                                //메일 관련
+                                "/findNationalFlag/api/v1/auth/email-authentication",
+
                                 //템플릿 관련
                                 "/css/**",
                                 "/js/**",

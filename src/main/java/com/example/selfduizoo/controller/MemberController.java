@@ -33,7 +33,8 @@ public class MemberController {
     public String home(
             Model model
     ){
-        model.addAttribute("userName", authFacade.getAuth().getName());
+        MemberDto memberDto = memberService.readMember(authFacade.getAuth().getName());
+        model.addAttribute("member", memberDto);
         return "member/home";
     }
 
@@ -138,4 +139,7 @@ public class MemberController {
         memberService.deleteMember(userName);
         return 1;
     }
+
+    //인증코드 발송
+    //확인
 }
