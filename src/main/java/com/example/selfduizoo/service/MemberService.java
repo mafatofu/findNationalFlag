@@ -69,4 +69,7 @@ public class MemberService {
                 );
         member.deleteMemberInfo();
     }
+
+    //메일 인증 저장
+
 }

@@ -1,5 +1,6 @@
 package com.example.selfduizoo.controller;
 
+import com.example.selfduizoo.dto.ReqAuthenticateCodeApiV1DTO;
 import com.example.selfduizoo.dto.ReqSendEmailAuthenticationApiV1DTO;
 import com.example.selfduizoo.service.AuthServiceApiV1;
 import lombok.RequiredArgsConstructor;
@@ -17,5 +18,10 @@ public class AuthControllerApiV1 {
     public HttpEntity<?> sendEmailAuthentication(
             @RequestBody ReqSendEmailAuthenticationApiV1DTO reqSendEmailAuthenticationApiV1DTO) {
         return authServiceApiV1.sendEmailAuthentication(reqSendEmailAuthenticationApiV1DTO);
+    }
+    // 인증 번호 검증
+    @PostMapping("/authentication-code")
+    public HttpEntity<?> authenticateCode(@RequestBody ReqAuthenticateCodeApiV1DTO reqAuthenticateCodeApiV1DTO) {
+        return authServiceApiV1.authenticateCode(reqAuthenticateCodeApiV1DTO);
     }
 }

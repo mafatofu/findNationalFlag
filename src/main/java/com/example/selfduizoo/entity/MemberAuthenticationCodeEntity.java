@@ -48,4 +48,8 @@ public class MemberAuthenticationCodeEntity {
 
     @Column(name = "delete_date")
     private LocalDateTime deleteDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 }

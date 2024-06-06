@@ -41,7 +41,10 @@ public class WebSecurityConfig {
                                 "/findNationalFlag/duplicateCkForEmail",
 
                                 //메일 관련
+                                //메일 인증 코드 보내기
                                 "/findNationalFlag/api/v1/auth/email-authentication",
+                                //메일 인증 코드 확인
+                                "/findNationalFlag/api/v1/auth/authentication-code",
 
                                 //템플릿 관련
                                 "/css/**",

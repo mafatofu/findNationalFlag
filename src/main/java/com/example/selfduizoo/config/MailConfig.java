@@ -36,12 +36,21 @@ public class MailConfig {
     }
     private Properties getMailProperties() {
         Properties properties = new Properties();
-        properties.setProperty("mail.transport.protocol", "smtp");
-        properties.setProperty("mail.smtp.auth", "true");
-        properties.setProperty("mail.smtp.starttls.enable", "true");
-        properties.setProperty("mail.debug", "true");
-        properties.setProperty("mail.smtp.ssl.trust","smtp.naver.com");
-        properties.setProperty("mail.smtp.ssl.enable","true");
+        properties.put("mail.transport.protocol", "smtp");//프로토콜로 smtp 사용
+        properties.put("mail.smtp.auth", "true");//smtp 서버에 인증이 필요
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");//SSL 소켓 팩토리 클래스 사용
+        properties.put("mail.smtp.starttls.enable", "true");//STARTTLS(TLS를 시작하는 명령)를 사용하여 암호화된 통신을 활성화
+        properties.put("mail.debug", "true");//디버깅 정보 출력
+        properties.put("mail.smtp.ssl.trust", "smtp.naver.com");//smtp 서버의 ssl 인증서를 신뢰
+        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");//사용할 ssl 프로토콜 버젼
+
+//        Properties properties = new Properties();
+//        properties.setProperty("mail.transport.protocol", "smtp");
+//        properties.setProperty("mail.smtp.auth", "true");
+//        properties.setProperty("mail.smtp.starttls.enable", "true");
+//        properties.setProperty("mail.debug", "true");
+//        properties.setProperty("mail.smtp.ssl.trust","smtp.naver.com");
+//        properties.setProperty("mail.smtp.ssl.enable","true");
         return properties;
     }
 }

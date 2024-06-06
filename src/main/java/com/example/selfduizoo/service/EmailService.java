@@ -7,6 +7,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ import java.io.UnsupportedEncodingException;
 public class EmailService {
     private final TemplateEngine templateEngine;
     private final JavaMailSender javaMailSender;
+    @Value("${spring.mail.username}")
+    String from;
     public Boolean sendEmailAuthentication(ReqSendEmailAuthenticationApiV1DTO reqEmailAuthenticationApiV1DTO, String authenticationCode) {
         // 메시지 객체를 생성하고
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -36,7 +39,8 @@ public class EmailService {
 
             // 이메일 내용 설정
             message.setText(setContext(authenticationCode), "UTF-8", "html");
-
+            // 이메일 발신자 설정
+            message.setFrom(new InternetAddress(from + "@naver.com"));
             // 송신
             //TODO 여기서 오류남
             /*
