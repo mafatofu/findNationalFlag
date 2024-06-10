@@ -54,7 +54,7 @@ public class WebSecurityConfig {
                         ).permitAll()
                                 .requestMatchers(
                                         //국가이름검색
-                                        "/findNationalFlag/searchFlag",
+                                        "/findNationalFlag/country/searchFlag",
                                         //로그아웃
                                         "/findNationalFlag/logout",
                                         //마이페이지

@@ -44,7 +44,6 @@ public class MemberController {
     }
     @PostMapping("/login")
     public String login(){
-        System.out.println("test");
         return "redirect:/findNationalFlag";
     }
     @PostMapping("/logout")
