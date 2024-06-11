@@ -139,6 +139,5 @@ public class MemberController {
         return 1;
     }
 
-    //인증코드 발송
-    //확인
+
 }

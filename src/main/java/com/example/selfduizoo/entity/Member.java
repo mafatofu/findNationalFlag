@@ -1,6 +1,5 @@
 package com.example.selfduizoo.entity;
 
-import com.example.selfduizoo.dto.MemberDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -22,7 +21,10 @@ public class Member {
     private String password;
     private String email;
     private Authority authority;
-
+    //프로필이미지
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private ProfileImage profileImage;
+    //메일인증관련
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<MemberAuthenticationCodeEntity> mailAuth;
     //회원정보 수정
@@ -33,6 +35,8 @@ public class Member {
     public void changeMemberInfo(Authority authority){
         this.authority = authority;
     }
+
+
 
     //회원 탈퇴
     public void deleteMemberInfo(){

@@ -4,6 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .box {
+            width: 150px;
+            height: 150px;
+            border-radius: 70%;
+            overflow: hidden;
+        }
+        .profile {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
 </head>
 <body>
     <!--프로필 수정-->
@@ -15,7 +28,14 @@
                     <div>
                         <div>
                             <h2>회원정보 수정</h2>
+                            <div class="box" style="background: #BDBDBD;">
+                                <img class="profile" src="/img/profile/defaultImg.PNG">
+                            </div>
                             <form id="updateForm" onsubmit="return false">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control" id="profileImg" name="profileImg" type="file" required placeholder="프로필 사진 업로드">
+                                    <label for="password">프로필사진</label>
+                                </div>
                                 <div class="form-floating mb-3">
                                     <input class="form-control" id="password" name="password" type="password" onkeyup="passwordValidCkFnc()" maxlength="20" required placeholder="비밀번호 입력">
                                     <span id="passwordCkMsg"></span>

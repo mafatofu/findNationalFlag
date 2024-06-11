@@ -63,6 +63,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     // 문자열 자동 생성 함수 사용 위해 추가
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+    //파일업로드
+    implementation('commons-io:commons-io:2.11.0')
 }
 
 tasks.named('test') {

@@ -10,7 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberDto {
-    private Long id;
     private String userName;
     private String password;
     private String email;
@@ -18,7 +17,6 @@ public class MemberDto {
 
     public static MemberDto fromEntity(Member entity){
         return MemberDto.builder()
-                .id(entity.getId())
                 .userName(entity.getUserName())
                 .password(entity.getPassword())
                 .email(entity.getEmail())

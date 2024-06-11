@@ -70,6 +70,6 @@ public class MemberService {
         member.deleteMemberInfo();
     }
 
-    //메일 인증 저장
+    //TODO 프로필 이미지 변경
 
 }
