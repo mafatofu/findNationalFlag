@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -113,17 +114,13 @@ public class MemberController {
     }
 
     //회원정보 수정
-    @PostMapping("/updateProfile")
+    @PostMapping(value = "/updateProfile")
     @ResponseBody
     public void updateProfile(
-            @RequestParam("userName")
-            String userName,
-            @RequestParam("password")
-            String password,
-            @RequestParam("profileImage")
-            MultipartFile profileImage
+            @RequestPart(value = "key") MemberDto dto,
+            @RequestPart(value ="profileImage") MultipartFile profileImage
     ) throws IOException {
-        memberService.updateMember(userName, password, profileImage);
+        memberService.updateMember(dto.getUserName(), dto.getPassword(), profileImage);
 
     }
 

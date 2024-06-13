@@ -31,7 +31,7 @@
                             <div class="box" style="background: #BDBDBD;">
                                 <img class="profile" th:src="${profileImage.getUrl()}">
                             </div>
-                            <form id="updateForm" onsubmit="return false">
+                            <form id="updateForm" onsubmit="return false" enctype="multipart/form-data">
                                 <div class="form-floating mb-3">
                                     <input class="form-control" id="profileImg" name="profileImg" type="file" required placeholder="프로필 사진 업로드">
                                     <label for="password">프로필사진</label>
@@ -258,16 +258,19 @@
         else if (passwordMatchCk !== true){
             alert("비밀번호 일치 체크를 진행해주세요!")
         } else {
-            const formData = {
+            const memberData = {
                 userName : userName,
-                password: passwordVal,
-                profileImage : profileImage
+                password: passwordVal
             };
+            let formData = new FormData();
+            formData.append("key", new Blob([JSON.stringify(memberData)], {type:"application/json"}));
+            formData.append("profileImage", profileImage);
+
 
             $.ajax({
                 type : "POST",
                 url : "/findNationalFlag/updateProfile",
-                contentType: "multipart/form-data",
+                contentType: false,
                 processData : false,
                 data: formData,
                 success : function (result){
