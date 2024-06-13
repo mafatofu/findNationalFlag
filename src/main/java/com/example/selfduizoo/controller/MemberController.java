@@ -2,9 +2,13 @@ package com.example.selfduizoo.controller;
 
 import com.example.selfduizoo.config.AuthenticationFacade;
 import com.example.selfduizoo.dto.MemberDto;
+import com.example.selfduizoo.dto.ProfileImageDto;
 import com.example.selfduizoo.entity.CustomMemberDetails;
+import com.example.selfduizoo.entity.Member;
+import com.example.selfduizoo.entity.ProfileImage;
 import com.example.selfduizoo.service.CustomMemberDetailsManager;
 import com.example.selfduizoo.service.MemberService;
+import com.example.selfduizoo.service.ProfileImgService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,16 +21,20 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/findNationalFlag")
 public class MemberController {
-    private final UserDetailsManager manager;
+
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationFacade authFacade;
     private final MemberService memberService;
+    private final ProfileImgService profileImgService;
     private final CustomMemberDetailsManager customManager;
     private static String msg = "";
     @GetMapping
@@ -97,19 +105,26 @@ public class MemberController {
             Model model
     ){
         MemberDto memberDto = memberService.readMember(authFacade.getAuth().getName());
+        Member member = memberService.readMemberOriginal(authFacade.getAuth().getName());
+        ProfileImageDto profileImageDto = profileImgService.readProfileImage(member);
         model.addAttribute("member", memberDto);
+        model.addAttribute("profileImage", profileImageDto);
         return "member/myProfile";
     }
 
     //회원정보 수정
     @PostMapping("/updateProfile")
     @ResponseBody
-    public ResponseEntity<MemberDto> updateProfile(
-            @RequestBody
-            MemberDto dto
-    ){
-        memberService.updateMember(dto.getUserName(), dto.getPassword());
-        return ResponseEntity.ok().body(dto);
+    public void updateProfile(
+            @RequestParam("userName")
+            String userName,
+            @RequestParam("password")
+            String password,
+            @RequestParam("profileImage")
+            MultipartFile profileImage
+    ) throws IOException {
+        memberService.updateMember(userName, password, profileImage);
+
     }
 
     //회원탈퇴
@@ -138,6 +153,7 @@ public class MemberController {
         memberService.deleteMember(userName);
         return 1;
     }
+
 
 
 }

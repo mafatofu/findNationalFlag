@@ -3,6 +3,7 @@ package com.example.selfduizoo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,7 +36,6 @@ public class Member {
     public void changeMemberInfo(Authority authority){
         this.authority = authority;
     }
-
 
 
     //회원 탈퇴

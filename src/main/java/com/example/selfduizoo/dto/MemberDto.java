@@ -2,7 +2,9 @@ package com.example.selfduizoo.dto;
 
 import com.example.selfduizoo.entity.Authority;
 import com.example.selfduizoo.entity.Member;
+import com.example.selfduizoo.entity.ProfileImage;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 @Getter
@@ -14,6 +16,7 @@ public class MemberDto {
     private String password;
     private String email;
     private Authority authority;
+    private MultipartFile profileImage;
 
     public static MemberDto fromEntity(Member entity){
         return MemberDto.builder()

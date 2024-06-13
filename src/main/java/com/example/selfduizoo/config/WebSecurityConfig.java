@@ -50,7 +50,9 @@ public class WebSecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/fonts/**",
-                                "/img/**"
+                                "/img/**",
+                                //프로필사진 관련
+                                "/img/profile/**"
                         ).permitAll()
                                 .requestMatchers(
                                         //국가이름검색
