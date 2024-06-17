@@ -1,6 +1,7 @@
 package com.example.selfduizoo.service;
 
 import com.example.selfduizoo.dto.MemberDto;
+import com.example.selfduizoo.entity.Authority;
 import com.example.selfduizoo.entity.Member;
 import com.example.selfduizoo.entity.ProfileImage;
 import com.example.selfduizoo.repo.MemberRepo;
@@ -31,7 +32,7 @@ public class MemberService {
     @Value("${spring.servlet.multipart.location}")
     String location;
     public MemberDto readMember(String userName){
-        Member member = memberRepo.findByUserName(userName)
+        Member member = memberRepo.findByUserNameAndAuthorityNot(userName, Authority.ROLE_DORMANT_USER)
                 .orElseThrow(
                         ()-> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."
@@ -41,7 +42,7 @@ public class MemberService {
     }
 
     public Member readMemberOriginal(String userName){
-        Member member = memberRepo.findByUserName(userName)
+        Member member = memberRepo.findByUserNameAndAuthorityNot(userName, Authority.ROLE_DORMANT_USER)
                 .orElseThrow(
                         ()-> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."
@@ -54,7 +55,7 @@ public class MemberService {
     public int duplicateCkForUserName(String userName) {
         //중복확인용
         int isDuplicated = 0;
-        boolean isExist = memberRepo.existsByUserName(userName);
+        boolean isExist = memberRepo.existsByUserNameAndAuthorityNot(userName, Authority.ROLE_DORMANT_USER);
         if (isExist)
             isDuplicated = 1;
         return isDuplicated;
@@ -64,7 +65,7 @@ public class MemberService {
     public int duplicateCkForEmail(String email) {
         //중복확인용
         int isDuplicated = 0;
-        boolean isExist = memberRepo.existsByEmail(email);
+        boolean isExist = memberRepo.existsByEmailAndAuthorityNot(email, Authority.ROLE_DORMANT_USER);
         if (isExist)
             isDuplicated = 1;
         return isDuplicated;

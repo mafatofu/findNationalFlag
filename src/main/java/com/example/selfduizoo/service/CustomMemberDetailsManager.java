@@ -6,7 +6,6 @@ import com.example.selfduizoo.entity.Member;
 import com.example.selfduizoo.entity.ProfileImage;
 import com.example.selfduizoo.repo.MemberRepo;
 import com.example.selfduizoo.repo.ProfileImageRepo;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,10 +34,6 @@ public class CustomMemberDetailsManager implements UserDetailsManager {
     @Override
     @Transactional
     public void createUser(UserDetails user) {
-        if (userExists(user.getUsername())){
-            log.error("이미 존재하는 아이디입니다.");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
         if (user instanceof CustomMemberDetails memberDetails){
 
             Member member = Member.builder()
@@ -75,7 +70,7 @@ public class CustomMemberDetailsManager implements UserDetailsManager {
                     .build();
 
             log.info("Authority : {}", memberDetails.getAuthorities());
-            if (userExists(member.getUserName())){
+            if (userExistsAndAuthorityNot(member.getUserName(), Authority.ROLE_DORMANT_USER)){
                 log.error("이미 존재하는 유저명입니다.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
@@ -87,7 +82,7 @@ public class CustomMemberDetailsManager implements UserDetailsManager {
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> optionalMember = memberRepo.findByUserName(username);
+        Optional<Member> optionalMember = memberRepo.findByUserNameAndAuthorityNot(username, Authority.ROLE_DORMANT_USER);
         if (optionalMember.isEmpty()){
             log.info("유저명을 찾을 수 없습니다.");
             throw new UsernameNotFoundException(username);
@@ -126,6 +121,10 @@ public class CustomMemberDetailsManager implements UserDetailsManager {
     @Override
     public boolean userExists(String username) {
         return memberRepo.existsByUserName(username);
+    }
+
+    public boolean userExistsAndAuthorityNot(String username, Authority authority){
+        return memberRepo.existsByUserNameAndAuthorityNot(username, authority);
     }
 
 }
