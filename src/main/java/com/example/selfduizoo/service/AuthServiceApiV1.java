@@ -68,7 +68,7 @@ public class AuthServiceApiV1 {
             memberAuthenticationCodeRepository.save(beforeMemberAuthenticationCodeEntity);
         }
         //메일 인증 엔티티에 넣을 member entity 불러오기
-        Member member = memberRepo.findByUserName(authFacade.getAuth().getName())
+        Member member = memberRepo.findByUserNameAndAuthorityNot(authFacade.getAuth().getName(), Authority.ROLE_DORMANT_USER)
                 .orElseThrow(
                         ()-> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."
@@ -130,7 +130,7 @@ public class AuthServiceApiV1 {
             // 인증 성공 처리
             memberAuthenticationCodeEntity.setVerified(true);
             //메일 인증 엔티티에 넣을 member entity 불러오기
-            Member member = memberRepo.findByUserName(authFacade.getAuth().getName())
+            Member member = memberRepo.findByUserNameAndAuthorityNot(authFacade.getAuth().getName(), Authority.ROLE_DORMANT_USER)
                     .orElseThrow(
                             ()-> new ResponseStatusException(
                                     HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."
