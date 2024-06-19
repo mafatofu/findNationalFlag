@@ -1,5 +1,6 @@
 package com.example.selfduizoo.config;
 
+import com.example.selfduizoo.service.CustomOAuth2UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import java.io.IOException;
 @Configuration
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+    private final CustomOAuth2UserService customOAuth2UserService;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -27,12 +29,17 @@ public class WebSecurityConfig {
                 //CsrfToken을 쿠키에 보관하여 JavaScript 기반 응용 프로그램을 지원
 //                .csrf((csrf) -> csrf
 //                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+
                 .authorizeHttpRequests(
                         auth -> auth
                         .requestMatchers(
+                                "/",
                                 //메인
                                 "/findNationalFlag",
-                                //로그인
+                                //로그인 + 소셜로그인
+                                "/oauth2/authorization/google",
+                                "/oauth2/authorization/naver",
+                                "/oauth2/authorization/kakao",
                                 "/findNationalFlag/login",
                                 //회원가입
                                 "/findNationalFlag/joinForm",
@@ -93,9 +100,15 @@ public class WebSecurityConfig {
                         .logoutUrl("/findNationalFlag/logout")
                         //로그아웃 성공 시 이동할 url
                         .logoutSuccessUrl("/findNationalFlag").invalidateHttpSession(true)// http 세션 무효화 여부
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
                         .deleteCookies("JSESSIONID") //해당 쿠키 삭제
                         .permitAll()
-                );
+                )
+                .oauth2Login(oauthLogin ->
+                        oauthLogin.userInfoEndpoint(userInfoEndpointConfig ->
+                                userInfoEndpointConfig.userService(customOAuth2UserService)))
+                ;
 
 
 

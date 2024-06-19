@@ -22,6 +22,8 @@ public class Member {
     private String password;
     private String email;
     private Authority authority;
+    //로그인방법
+    private String loginMethod;
     //프로필이미지
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private ProfileImage profileImage;
@@ -35,6 +37,14 @@ public class Member {
     //회원정보 수정
     public void changeMemberInfo(Authority authority){
         this.authority = authority;
+    }
+    //소셜로그인용 엔티티 return
+    public Member changeMemberInfoForSocial(String userName){
+        this.userName = userName;
+        return this;
+    }
+    public String getAuthorityKey(){
+        return this.getAuthority().getAuthority();
     }
 
 

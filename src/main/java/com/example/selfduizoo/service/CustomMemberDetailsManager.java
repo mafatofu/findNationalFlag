@@ -40,6 +40,7 @@ public class CustomMemberDetailsManager implements UserDetailsManager {
                     .userName(memberDetails.getUsername())
                     .password(memberDetails.getPassword())
                     .email(memberDetails.getEmail())
+                    .loginMethod("regular")
                     .authority(Authority.ROLE_INACTIVE_USER)
                     .build();
             //디렉토리 생성을 위한 path

@@ -32,7 +32,19 @@ public class MemberService {
     @Value("${spring.servlet.multipart.location}")
     String location;
     public MemberDto readMember(String userName){
+        //일반로그인 / 소셜로그인을 분기
         Member member = memberRepo.findByUserNameAndAuthorityNot(userName, Authority.ROLE_DORMANT_USER)
+                .orElseThrow(
+                        ()-> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."
+                        )
+                );
+        return MemberDto.fromEntity(member);
+    }
+
+    public MemberDto readMemberForSocial(String userName){
+        //소셜로그인
+        Member member = memberRepo.findByUserNameAndLoginMethodAndAuthorityNot(userName, "social", Authority.ROLE_DORMANT_USER)
                 .orElseThrow(
                         ()-> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."
@@ -55,7 +67,7 @@ public class MemberService {
     public int duplicateCkForUserName(String userName) {
         //중복확인용
         int isDuplicated = 0;
-        boolean isExist = memberRepo.existsByUserNameAndAuthorityNot(userName, Authority.ROLE_DORMANT_USER);
+        boolean isExist = memberRepo.existsByUserNameAndLoginMethodAndAuthorityNot(userName, "regualr", Authority.ROLE_DORMANT_USER);
         if (isExist)
             isDuplicated = 1;
         return isDuplicated;
@@ -65,7 +77,7 @@ public class MemberService {
     public int duplicateCkForEmail(String email) {
         //중복확인용
         int isDuplicated = 0;
-        boolean isExist = memberRepo.existsByEmailAndAuthorityNot(email, Authority.ROLE_DORMANT_USER);
+        boolean isExist = memberRepo.existsByEmailAndLoginMethodAndAuthorityNot(email, "regular", Authority.ROLE_DORMANT_USER);
         if (isExist)
             isDuplicated = 1;
         return isDuplicated;
