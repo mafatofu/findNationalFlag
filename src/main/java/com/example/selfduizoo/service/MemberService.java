@@ -31,9 +31,9 @@ public class MemberService {
     private final ProfileImageRepo profileImageRepo;
     @Value("${spring.servlet.multipart.location}")
     String location;
-    public MemberDto readMember(String userName){
+    public MemberDto readMember(String userName, String loginMethod){
         //일반로그인 / 소셜로그인을 분기
-        Member member = memberRepo.findByUserNameAndAuthorityNot(userName, Authority.ROLE_DORMANT_USER)
+        Member member = memberRepo.findByUserNameAndLoginMethodAndAuthorityNot(userName, loginMethod, Authority.ROLE_DORMANT_USER)
                 .orElseThrow(
                         ()-> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."
@@ -53,8 +53,8 @@ public class MemberService {
         return MemberDto.fromEntity(member);
     }
 
-    public Member readMemberOriginal(String userName){
-        Member member = memberRepo.findByUserNameAndAuthorityNot(userName, Authority.ROLE_DORMANT_USER)
+    public Member readMemberOriginal(String userName, String loginMethod){
+        Member member = memberRepo.findByUserNameAndLoginMethodAndAuthorityNot(userName, loginMethod, Authority.ROLE_DORMANT_USER)
                 .orElseThrow(
                         ()-> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."
@@ -127,6 +127,5 @@ public class MemberService {
         member.deleteMemberInfo();
     }
 
-    //TODO 프로필 이미지 변경
 
 }

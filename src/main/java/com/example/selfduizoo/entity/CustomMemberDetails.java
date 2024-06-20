@@ -11,13 +11,17 @@ import java.util.Collections;
 
 @Builder
 public class CustomMemberDetails implements UserDetails {
+    private final Member member;
     private Long id;
     private String userName;
     private String password;
     @Getter
     private String email;
     private Authority authority;
-
+    private String loginMethod;
+    public final Member getMember() {
+        return member;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (authority != null){

@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,9 +43,20 @@ public class MemberController {
     private static String msg = "";
     @GetMapping
     public String home(
-            Model model
+            Model model,
+            @AuthenticationPrincipal OAuth2User oauthUser
     ){
-        MemberDto memberDto = memberService.readMember(authFacade.getAuth().getName());
+
+        String userName = "";
+        String loginMethod = "";
+        if (oauthUser != null){
+            userName = authFacade.getAuth().getName().split("=")[5].replace("}", "");
+            loginMethod = "social";
+        } else {
+            userName = authFacade.getAuth().getName();
+            loginMethod = "regular";
+        }
+        MemberDto memberDto = memberService.readMember(userName, loginMethod);
         model.addAttribute("member", memberDto);
         return "member/home";
     }
@@ -106,11 +118,20 @@ public class MemberController {
     @GetMapping("/profile")
     public String updateProfile(
             Model model,
-            Authentication authentication,
-            @AuthenticationPrincipal UserDetails userDetails
+            @AuthenticationPrincipal OAuth2User oauthUser
     ){
-        MemberDto memberDto = memberService.readMember(authFacade.getAuth().getName());
-        Member member = memberService.readMemberOriginal(authFacade.getAuth().getName());
+        String userName = "";
+        String loginMethod = "";
+        if (oauthUser != null){
+            userName = authFacade.getAuth().getName().split("=")[5].replace("}", "");
+            loginMethod = "social";
+        } else {
+            userName = authFacade.getAuth().getName();
+            loginMethod = "regular";
+        }
+        MemberDto memberDto = memberService.readMember(userName, loginMethod);
+        Member member = memberService.readMemberOriginal(userName, loginMethod);
+
         ProfileImageDto profileImageDto = profileImgService.readProfileImage(member);
         model.addAttribute("member", memberDto);
         model.addAttribute("profileImage", profileImageDto);
