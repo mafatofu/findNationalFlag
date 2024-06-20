@@ -25,7 +25,7 @@ public class Member {
     //로그인방법
     private String loginMethod;
     //프로필이미지
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ProfileImage profileImage;
     //메일인증관련
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)

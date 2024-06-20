@@ -1,12 +1,14 @@
 package com.example.selfduizoo.service;
 
 import com.example.selfduizoo.config.OAuthAttributes;
+import com.example.selfduizoo.entity.Authority;
 import com.example.selfduizoo.entity.Member;
 import com.example.selfduizoo.repo.MemberRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.manager.util.SessionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 //소셜로그인서비스
 @Service
@@ -26,6 +29,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private final MemberRepo memberRepo;
     private final HttpSession httpSession;
+    private final ProfileImgService profileImgService;
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
@@ -39,6 +43,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         Member member = saveOrUpdate(attributes2);
+
         httpSession.setAttribute("member", member);
 
         return new DefaultOAuth2User(
@@ -49,9 +54,16 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private Member saveOrUpdate(OAuthAttributes attributes){
-        Member member = memberRepo.findByEmailAndLoginMethod(attributes.getEmail(), "social")
-                .map(entity -> entity.changeMemberInfoForSocial(attributes.getName()))
-                .orElse(attributes.toEntity());
+        Optional<Member> optionalMember = memberRepo.findByEmailAndLoginMethod(attributes.getEmail(), "social");
+        Member member = null;
+        if (optionalMember.isPresent()){
+            member = optionalMember.get();
+            member.changeMemberInfoForSocial(attributes.getName());
+        } else {
+            member = attributes.toEntity();
+            profileImgService.createProfileDirectory(member);
+        }
+
         return memberRepo.save(member);
     }
 }
