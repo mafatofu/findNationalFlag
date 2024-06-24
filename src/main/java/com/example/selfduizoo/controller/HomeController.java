@@ -18,13 +18,7 @@ public class HomeController {
     //소셜로그인
     @GetMapping("/")
     public String mainHome(
-            Model model,
-            HttpServletRequest request,
-            RedirectAttributes redirectAttributes
     ){
-//        MemberDto memberDto = memberService.readMemberForSocial(authFacade.getAuth().getName().split("=")[5].replace("}", ""));
-//        model.addAttribute("member", memberDto);
-//        return "member/home";
         return "redirect:/findNationalFlag";
     }
 }

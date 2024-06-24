@@ -60,7 +60,7 @@ public class OAuthAttributes {
             Map<String, Object> attributes
     ){
         Map<String, Object> response = (Map<String, Object>) attributes.get("kakao_account");
-        Map<String, Object> account = (Map<String, Object>) attributes.get("profile");
+        Map<String, Object> account = (Map<String, Object>) attributes.get("properties");
         return OAuthAttributes.builder()
                 .name((String) account.get("nickname"))
                 .email((String) response.get("email"))

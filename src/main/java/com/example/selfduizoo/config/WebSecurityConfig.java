@@ -41,6 +41,9 @@ public class WebSecurityConfig {
                                 "/oauth2/authorization/naver",
                                 "/oauth2/authorization/kakao",
                                 "/findNationalFlag/login",
+
+
+                                "/login/oauth2/code/naver",
                                 //회원가입
                                 "/findNationalFlag/joinForm",
                                 "/findNationalFlag/join",
@@ -105,9 +108,24 @@ public class WebSecurityConfig {
                         .deleteCookies("JSESSIONID") //해당 쿠키 삭제
                         .permitAll()
                 )
-                .oauth2Login(oauthLogin ->
-                        oauthLogin.userInfoEndpoint(userInfoEndpointConfig ->
-                                userInfoEndpointConfig.userService(customOAuth2UserService)))
+                .oauth2Login(
+
+                        oauthLogin ->
+                                oauthLogin.userInfoEndpoint(
+                                userInfoEndpointConfig ->
+                                userInfoEndpointConfig.userService(customOAuth2UserService)
+                        )
+                        .successHandler(new AuthenticationSuccessHandler() {
+                            @Override
+                            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                                //인증 성공 시
+                                response.sendRedirect("/findNationalFlag");
+                            }
+                        })
+                        //실패시
+                        .failureUrl("/findNationalFlag/login?fail").permitAll()
+
+                )
                 ;
 
 
