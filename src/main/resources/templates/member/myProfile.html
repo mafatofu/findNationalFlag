@@ -36,16 +36,21 @@
                                     <input class="form-control" id="profileImg" name="profileImg" type="file" required placeholder="프로필 사진 업로드">
                                     <label for="password">프로필사진</label>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input class="form-control" id="password" name="password" type="password" onkeyup="passwordValidCkFnc()" maxlength="20" required placeholder="비밀번호 입력">
-                                    <span id="passwordCkMsg"></span>
-                                    <label for="password">패스워드</label>
+                                <div th:if="${#strings.equals(member.getLoginMethod(), 'regular')}">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="password" name="password" type="password" onkeyup="passwordValidCkFnc()" maxlength="20" required placeholder="비밀번호 입력">
+                                        <span id="passwordCkMsg"></span>
+                                        <label for="password">패스워드</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="passwordCk" name="passwordCk" type="password"  onkeyup="passwordMatchCkFnc()" maxlength="20" required placeholder="비밀번호 확인">
+                                        <span id="passwordMatchMsg"></span>
+                                        <label for="passwordCk">패스워드 확인</label>
+                                    </div>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input class="form-control" id="passwordCk" name="passwordCk" type="password"  onkeyup="passwordMatchCkFnc()" maxlength="20" required placeholder="비밀번호 확인">
-                                    <span id="passwordMatchMsg"></span>
-                                    <label for="passwordCk">패스워드 확인</label>
-                                </div>
+<!--                                <div th:uf="${member.getLoginMethod() == 'social'}">-->
+
+<!--                                </div>-->
                                 <div class="form-floating mb-3">
                                     <input class="form-control" id="email" name="email" type="text" th:value="${member.email}" maxlength="30" disabled>
                                     <label for="email">이메일</label>
@@ -88,6 +93,7 @@
 
     const userName = [[${member.userName}]];
     const authType = [[${member.getAuthority().getAuthority()}]];
+    const loginMethod = [[${member.getLoginMethod()}]];
     //패스워드 정규식 체크용 flag변수
     let passwordCk = false;
     //패스워드 중복확인용 flag변수
@@ -245,43 +251,56 @@
         const emailVal = $('#email').val();
         const profileImg = $('#profileImg');
         const profileImage = profileImg[0].files[0];
-        if (
-            passwordVal.trim()===''||
-            passwordCkVal.trim()===''||
-            emailVal.trim()===''
-        ){
-            alert("비어있는 값이 있는지 확인해주세요!");
-        } else if (passwordCk !== true){
-            alert("올바른 비밀번호인지 확인해주세요!")
+
+        //loginMethod에 따라 분기
+        if ("social" === loginMethod){
+            if (profileImage === undefined){
+                alert("프로필사진이 변경되지 않았습니다!");
+                return false;
+            }
+        } else if("regular" === loginMethod){
+
+            if (
+                passwordVal.trim()===''||
+                passwordCkVal.trim()===''||
+                emailVal.trim()===''
+            ){
+                alert("비어있는 값이 있는지 확인해주세요!");
+                return false;
+            } else if (passwordCk !== true){
+                alert("올바른 비밀번호인지 확인해주세요!")
+                return false;
+            }
+            //비밀번호 일치 체크 여부 확인
+            else if (passwordMatchCk !== true){
+                alert("비밀번호 일치 체크를 진행해주세요!")
+                return false;
+            }
         }
-        //비밀번호 일치 체크 여부 확인
-        else if (passwordMatchCk !== true){
-            alert("비밀번호 일치 체크를 진행해주세요!")
-        } else {
-            const memberData = {
-                userName : userName,
-                password: passwordVal
-            };
-            let formData = new FormData();
-            formData.append("key", new Blob([JSON.stringify(memberData)], {type:"application/json"}));
-            formData.append("profileImage", profileImage);
+        const memberData = {
+            userName : userName,
+            password: passwordVal,
+            loginMethod : loginMethod
+        };
+        let formData = new FormData();
+        formData.append("key", new Blob([JSON.stringify(memberData)], {type:"application/json"}));
+        formData.append("profileImage", profileImage);
 
 
-            $.ajax({
-                type : "POST",
-                url : "/findNationalFlag/updateProfile",
-                contentType: false,
-                processData : false,
-                data: formData,
-                success : function (result){
-                    alert("수정되었습니다!");
-                    window.location.href = "/findNationalFlag/profile";
-                },
-                error:function (error){
-                    alert("에러가 발생했습니다." + error);
-                }
-            });
-        }
+        $.ajax({
+            type : "POST",
+            url : "/findNationalFlag/updateProfile",
+            contentType: false,
+            processData : false,
+            data: formData,
+            success : function (result){
+                alert("수정되었습니다!");
+                window.location.href = "/findNationalFlag/profile";
+            },
+            error:function (error){
+                alert("에러가 발생했습니다." + error);
+            }
+        });
     });
 </script>
 </body>

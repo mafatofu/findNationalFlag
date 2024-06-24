@@ -85,8 +85,8 @@ public class MemberService {
 
     //회원정보 수정
     @Transactional
-    public void updateMember(String userName, String password, MultipartFile imageFile) throws IOException {
-        Member member = memberRepo.findByUserName(userName)
+    public void updateMember(MemberDto dto, MultipartFile imageFile) throws IOException {
+        Member member = memberRepo.findByUserName(dto.getUserName())
                 .orElseThrow(
                         ()-> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."
@@ -98,21 +98,25 @@ public class MemberService {
                                 HttpStatus.NOT_FOUND, "프로필 이미지를 찾을 수 없습니다."
                         )
                 );
-        member.changeMemberInfo(passwordEncoder.encode(password));
+        if (dto.getPassword() != null){
+            member.changeMemberInfo(passwordEncoder.encode(dto.getPassword()));
+        }
 
-        //기존 디렉토리의 이미지 파일 삭제
-        String[] urlSplit = profileImage.getUrl().split("/");
-        String urlSplitNamePart = urlSplit[urlSplit.length-1];
-        File oldProfileImg = new File(location + "/" +member.getLoginMethod()+"/" + member.getUserName() + "/" + urlSplitNamePart);
-        boolean oldProfileImgdelete = oldProfileImg.delete();
-        //새롭게 파일 생성
-        //랜덤이름
-        UUID uuid = UUID.randomUUID();
-        String fileName = uuid.toString() + "_" + imageFile.getOriginalFilename();
-        File profileImg = new File(location + "/" + member.getUserName(), fileName);
-        imageFile.transferTo(profileImg);
-        //생성 파일명을 테이블에 저장
-        profileImage.updateUrl("/img/profile/"+member.getLoginMethod()+"/"+member.getUserName()+"/"+fileName);
+        if (imageFile != null){
+            //기존 디렉토리의 이미지 파일 삭제
+            String[] urlSplit = profileImage.getUrl().split("/");
+            String urlSplitNamePart = urlSplit[urlSplit.length-1];
+            File oldProfileImg = new File(location + "/" +member.getLoginMethod()+"/" + member.getUserName() + "/" + urlSplitNamePart);
+            boolean oldProfileImgdelete = oldProfileImg.delete();
+            //새롭게 파일 생성
+            //랜덤이름
+            UUID uuid = UUID.randomUUID();
+            String fileName = uuid.toString() + "_" + imageFile.getOriginalFilename();
+            File profileImg = new File(location + "/" + member.getLoginMethod()+"/" + member.getUserName(), fileName);
+            imageFile.transferTo(profileImg);
+            //생성 파일명을 테이블에 저장
+            profileImage.updateUrl("/img/profile/"+member.getLoginMethod()+"/"+member.getUserName()+"/"+fileName);
+        }
     }
     //회원 탈퇴
     //휴면사용자로 권한 변경

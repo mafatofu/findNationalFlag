@@ -15,6 +15,7 @@ public class MemberDto {
     private String userName;
     private String password;
     private String email;
+    private String loginMethod;
     private Authority authority;
     private MultipartFile profileImage;
 
@@ -23,6 +24,7 @@ public class MemberDto {
                 .userName(entity.getUserName())
                 .password(entity.getPassword())
                 .email(entity.getEmail())
+                .loginMethod(entity.getLoginMethod())
                 .authority(entity.getAuthority())
                 .build();
     }

@@ -143,9 +143,9 @@ public class MemberController {
     @ResponseBody
     public void updateProfile(
             @RequestPart(value = "key") MemberDto dto,
-            @RequestPart(value ="profileImage") MultipartFile profileImage
+            @RequestPart(value ="profileImage", required = false) MultipartFile profileImage
     ) throws IOException {
-        memberService.updateMember(dto.getUserName(), dto.getPassword(), profileImage);
+        memberService.updateMember(dto, profileImage);
 
     }
 
