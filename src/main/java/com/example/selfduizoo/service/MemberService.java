@@ -86,7 +86,7 @@ public class MemberService {
     //회원정보 수정
     @Transactional
     public void updateMember(MemberDto dto, MultipartFile imageFile) throws IOException {
-        Member member = memberRepo.findByUserName(dto.getUserName())
+        Member member = memberRepo.findByUserNameAndLoginMethodAndAuthorityNot(dto.getUserName(), dto.getLoginMethod(), Authority.ROLE_DORMANT_USER)
                 .orElseThrow(
                         ()-> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."

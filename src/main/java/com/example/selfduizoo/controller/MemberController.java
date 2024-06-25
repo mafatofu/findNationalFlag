@@ -20,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -44,14 +48,29 @@ public class MemberController {
     @GetMapping
     public String home(
             Model model,
-            @AuthenticationPrincipal OAuth2User oauthUser
+            @AuthenticationPrincipal OAuth2User oauthUser,
+            OAuth2AuthenticationToken oAuth2AuthenticationToken
     ){
 
         String userName = "";
         String loginMethod = "";
+        Map<String, Object> account = new HashMap<>();
         if (oauthUser != null){
-            userName = authFacade.getAuth().getName().split("=")[5].replace("}", "");
-            loginMethod = "social";
+            //각 소셜 로그인 별 분기
+            String authorizedClientRegistrationId =
+                    oAuth2AuthenticationToken.getAuthorizedClientRegistrationId();
+            if ("naver".equals(authorizedClientRegistrationId)){
+                account = (Map<String, Object>) oauthUser.getAttributes().get("response");
+                //userName = authFacade.getAuth().getName().split("=")[5].replace("}", "");
+                userName = account.get("name").toString();
+            } else if ("kakao".equals(authorizedClientRegistrationId)) {
+                account = (Map<String, Object>) oauthUser.getAttributes().get("properties");
+                userName = account.get("nickname").toString();
+            } else if ("google".equals(authorizedClientRegistrationId)) {
+
+            }
+
+            loginMethod =  authorizedClientRegistrationId;
         } else {
             userName = authFacade.getAuth().getName();
             loginMethod = "regular";
@@ -118,14 +137,29 @@ public class MemberController {
     @GetMapping("/profile")
     public String updateProfile(
             Model model,
-            @AuthenticationPrincipal OAuth2User oauthUser
+            @AuthenticationPrincipal OAuth2User oauthUser,
+            OAuth2AuthenticationToken oAuth2AuthenticationToken
     ){
         String userName = "";
         String loginMethod = "";
+        Map<String, Object> account = new HashMap<>();
         if (oauthUser != null){
-            userName = authFacade.getAuth().getName().split("=")[5].replace("}", "");
-            loginMethod = "social";
-        } else {
+            //각 소셜 로그인 별 분기
+            String authorizedClientRegistrationId =
+                    oAuth2AuthenticationToken.getAuthorizedClientRegistrationId();
+            if ("naver".equals(authorizedClientRegistrationId)){
+                account = (Map<String, Object>) oauthUser.getAttributes().get("response");
+                //userName = authFacade.getAuth().getName().split("=")[5].replace("}", "");
+                userName = account.get("name").toString();
+            } else if ("kakao".equals(authorizedClientRegistrationId)) {
+                account = (Map<String, Object>) oauthUser.getAttributes().get("properties");
+                userName = account.get("nickname").toString();
+            } else if ("google".equals(authorizedClientRegistrationId)) {
+
+            }
+
+            loginMethod =  authorizedClientRegistrationId;
+        }  else {
             userName = authFacade.getAuth().getName();
             loginMethod = "regular";
         }

@@ -253,7 +253,7 @@
         const profileImage = profileImg[0].files[0];
 
         //loginMethod에 따라 분기
-        if ("social" === loginMethod){
+        if ("kakao" === loginMethod || "naver" === loginMethod || "google" === loginMethod){
             if (profileImage === undefined){
                 alert("프로필사진이 변경되지 않았습니다!");
                 return false;

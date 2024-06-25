@@ -41,8 +41,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         Map<String, Object> attributes = oAuth2User.getAttributes();
         OAuthAttributes attributes2 = OAuthAttributes.of(
                 registrationId, userNameAttributeName, oAuth2User.getAttributes());
-
-        Member member = saveOrUpdate(attributes2);
+        //소셜로그인을 통해 끌고온 유저 정보 / 어떤 소셜로그인을 사용했는지
+        Member member = saveOrUpdate(attributes2, userRequest.getClientRegistration().getRegistrationId().toString());
 
         httpSession.setAttribute("member", member);
 
@@ -53,14 +53,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
     }
 
-    private Member saveOrUpdate(OAuthAttributes attributes){
-        Optional<Member> optionalMember = memberRepo.findByEmailAndLoginMethod(attributes.getEmail(), "social");
+    private Member saveOrUpdate(OAuthAttributes attributes, String loginMethod){
+        Optional<Member> optionalMember = memberRepo.findByEmailAndLoginMethod(attributes.getEmail(), loginMethod);
         Member member = null;
         if (optionalMember.isPresent()){
             member = optionalMember.get();
             member.changeMemberInfoForSocial(attributes.getName());
         } else {
-            member = attributes.toEntity();
+            member = attributes.toEntity(loginMethod);
             profileImgService.createProfileDirectory(member);
         }
 

@@ -69,11 +69,11 @@ public class OAuthAttributes {
                 .build();
     }
 
-    public Member toEntity(){
+    public Member toEntity(String loginMethod){
         return Member.builder()
                 .userName(name)
                 .email(email)
-                .loginMethod("social")
+                .loginMethod(loginMethod)
                 .authority(Authority.ROLE_USER)
                 .build();
     }
