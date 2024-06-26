@@ -67,7 +67,7 @@ public class MemberController {
                 account = (Map<String, Object>) oauthUser.getAttributes().get("properties");
                 userName = account.get("nickname").toString();
             } else if ("google".equals(authorizedClientRegistrationId)) {
-
+                userName = oauthUser.getAttributes().get("name").toString();
             }
 
             loginMethod =  authorizedClientRegistrationId;
@@ -155,7 +155,7 @@ public class MemberController {
                 account = (Map<String, Object>) oauthUser.getAttributes().get("properties");
                 userName = account.get("nickname").toString();
             } else if ("google".equals(authorizedClientRegistrationId)) {
-
+                userName = oauthUser.getAttributes().get("name").toString();
             }
 
             loginMethod =  authorizedClientRegistrationId;
