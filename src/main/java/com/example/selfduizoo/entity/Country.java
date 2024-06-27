@@ -22,4 +22,7 @@ public class Country {
     //이미지가 저장된 위치
     private String flagPath;
 
+    public void updateUrl(String flagPath){
+        this.flagPath = flagPath;
+    }
 }

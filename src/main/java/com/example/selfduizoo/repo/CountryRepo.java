@@ -9,5 +9,8 @@ import java.util.Optional;
 public interface CountryRepo extends JpaRepository<Country, Long> {
     //국가명으로 국가 entity 가져오기
     Optional<Country> findByCountryName(String countryName);
-    
+
+    boolean existsByCountryName(String countryName);
+    boolean existsByFlagPath(String flagPath);
+    boolean existsByCountryNameOrFlagPath(String countryName, String flagPath);
 }

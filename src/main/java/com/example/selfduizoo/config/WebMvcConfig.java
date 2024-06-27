@@ -11,5 +11,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/img/profile/**")
                 .addResourceLocations("file:/C:/springboot/selfduizoo/src/main/resources/static/img/profile/");
+        registry
+                .addResourceHandler("/img/flag/**")
+                .addResourceLocations("file:/C:/springboot/selfduizoo/src/main/resources/static/img/flag/");
     }
 }

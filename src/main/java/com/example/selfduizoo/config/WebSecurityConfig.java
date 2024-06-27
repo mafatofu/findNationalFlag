@@ -67,6 +67,8 @@ public class WebSecurityConfig {
                                 .requestMatchers(
                                         //국가이름검색
                                         "/findNationalFlag/country/searchFlag",
+                                        //국가 추가
+                                        "/findNationalFlag/country/insertFlag",
                                         //로그아웃
                                         "/findNationalFlag/logout",
                                         //마이페이지
