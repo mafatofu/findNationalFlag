@@ -10,20 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CountryService {
     private final CountryRepo countryRepo;
     //국기 읽어오기
-    public CountryDto readCountry(String countryName){
-        Country country = countryRepo.findByCountryName(countryName)
-                .orElseThrow(
-                        ()-> new ResponseStatusException(
-                                HttpStatus.NOT_FOUND, "국가를 찾을 수 없습니다."
-                        )
-                );
-        return CountryDto.fromEntity(country);
+    public List<CountryDto> readCountry(String countryName){
+        List<Country> countryList = countryRepo.findByCountryNameContains(countryName);
+
+        return countryList.stream().map(CountryDto::fromEntity).collect(Collectors.toList());
     }
     //국가명 / 국기 중복체크
     public int duplicateCkForNewCountry(MultipartFile flagImg, String newCountryName){

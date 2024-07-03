@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>홈</title>
     <style>
-        #countryFlag{
+        .countryFlag{
             width: 300px;
             height: 180px;
         }
@@ -45,8 +45,8 @@
     <button type="button" id="searchFlagBtn">국기 검색</button>
 </div>
 <div id="flagResult">
-    <p id="countryNameResult"></p>
-    <img alt="국기" id="countryFlag" src="/img/flag/defaultSearchImg.PNG">
+<!--    <p id="countryNameResult"></p>-->
+<!--    <img alt="국기" class="countryFlag" src="/img/flag/defaultSearchImg.PNG">-->
 </div>
 <!--국기 추가. 관리자 권한만 가능-->
 <div th:if="${#strings.equals(member.getAuthority().getAuthority(), '관리자')}">
@@ -93,13 +93,23 @@
             url  : "findNationalFlag/country/searchFlag",
             data : { countryName : countryName },
             success : function (result){
-                let countryNameResult = $('#countryNameResult');
-                let countryFlag = $('#countryFlag');
-                countryNameResult.text(result.countryName);
-                countryFlag.attr({src : result.flagPath});
+                //부모 element에, 자식 element 값이 있으면 삭제
+                //이전검색기록 삭제 후 다시 나타내기
+                let flagResult = document.querySelector("#flagResult");
+                let flagResultAppend = $('#flagResult');
+                if (flagResult.hasChildNodes()){
+                    flagResult.replaceChildren();
+                }
+                $.each(result, function (index, country){
+                    flagResultAppend.append("<p class='countryNameResult'>"+country.countryName+"</p>");
+                    flagResultAppend.append("<img class='countryFlag' src="+country.flagPath+">");
+                });
+
+                //countryNameResult.text(result.countryName);
+                //countryFlag.attr({src : result.flagPath});
             },
             error : function (error){
-                alert("에러가 발생했습니다.");
+                alert("국가를 찾을 수 없습니다.");
             }
         });
     });

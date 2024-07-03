@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -26,12 +27,12 @@ public class CountryController {
     //국가 검색 결과
     @ResponseBody
     @GetMapping("/searchFlag")
-    public ResponseEntity<CountryDto> searchFlag(
+    public ResponseEntity<List<CountryDto>> searchFlag(
             @RequestParam("countryName")
             String countryName
     ){
-        CountryDto dto = countryService.readCountry(countryName);
-        return ResponseEntity.ok().body(dto);
+        List<CountryDto> countryDtoList = countryService.readCountry(countryName);
+        return ResponseEntity.ok().body(countryDtoList);
     }
 
     @PostMapping(value = "/insertFlag")
