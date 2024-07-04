@@ -41,8 +41,6 @@ public class WebSecurityConfig {
                                 "/oauth2/authorization/naver",
                                 "/oauth2/authorization/kakao",
                                 "/findNationalFlag/login",
-
-
                                 "/login/oauth2/code/naver",
                                 //회원가입
                                 "/findNationalFlag/joinForm",

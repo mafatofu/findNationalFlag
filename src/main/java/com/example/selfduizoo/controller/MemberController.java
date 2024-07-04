@@ -48,7 +48,10 @@ public class MemberController {
     @GetMapping
     public String home(
             Model model,
-            @AuthenticationPrincipal OAuth2User oauthUser,
+            @RequestParam(required = false)
+            @AuthenticationPrincipal
+            OAuth2User oauthUser,
+            @RequestParam(required = false)
             OAuth2AuthenticationToken oAuth2AuthenticationToken
     ){
 
@@ -71,7 +74,8 @@ public class MemberController {
             }
 
             loginMethod =  authorizedClientRegistrationId;
-        } else {
+        }
+        else {
             userName = authFacade.getAuth().getName();
             loginMethod = "regular";
         }
@@ -137,7 +141,9 @@ public class MemberController {
     @GetMapping("/profile")
     public String updateProfile(
             Model model,
+            @RequestParam(required = false)
             @AuthenticationPrincipal OAuth2User oauthUser,
+            @RequestParam(required = false)
             OAuth2AuthenticationToken oAuth2AuthenticationToken
     ){
         String userName = "";
